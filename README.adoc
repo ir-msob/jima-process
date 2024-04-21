@@ -1,0 +1,60 @@
+= Jima Process
+:toc: macro
+:toc-title:
+:doctype: book
+
+toc::[]
+
+== Introduction
+
+Jima Process is a part of Jima framework that facilitates the management and execution of computational tasks and workflows in a distributed or multi-threaded environment. It provides a way to define, schedule, and coordinate the execution of complex computational processes across multiple nodes or services within a system.
+
+In the context of microservices architecture, a processing framework can be used to orchestrate the execution of diverse computational tasks and workflows across different microservices. This is particularly valuable in scenarios where complex data processing, transformation, or analysis is required, such as batch processing, data enrichment, or real-time analytics. By using a processing framework, developers can streamline the execution of computational tasks and workflows, optimizing resource utilization and improving overall system efficiency.
+
+Overall, Jima Process plays a pivotal role in enabling the efficient execution and coordination of computational tasks and workflows within a distributed system, contributing to the scalability and agility of the overall architecture.
+
+== Prerequisites
+
+Before you begin, ensure you have the following software and tools installed:
+
+* Java
+* Maven
+
+== Getting Started
+
+Follow these steps to get started with the Jima Lock project:
+
+1. Clone the repository.
+2. Install all the software and tools listed in the Prerequisites section.
+3. Install the project with the `mvn install` command.
+
+You can also add the following dependency to the `pom.xml` file of your project:
+
+[source,xml]
+----
+<dependencies>
+    <dependency>
+        <groupId>ir.msob.jima.process</groupId>
+        <artifactId>process-starter-*</artifactId>
+        <version>1.1.1</version>
+    </dependency>
+</dependencies>
+----
+
+== Running the Tests
+
+To run the tests, use the `mvn test` command.
+
+== Contributing
+
+We welcome contributions to Jima!
+Please fork the repository, make your changes, and submit a pull request.
+
+== License
+
+Jima is licensed under the Apache License 2.0. Please see the `LICENSE` file for more details.
+
+== Built With
+
+* [Java](https://www.java.com) - The main programming language used.
+* [Maven](https://maven.apache.org/) - Dependency Management.
