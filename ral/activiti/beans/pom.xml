@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>ir.msob.jima.process</groupId>
+        <artifactId>process-ral-activiti</artifactId>
+        <version>1.1.1</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+    <artifactId>process-ral-activiti-beans</artifactId>
+    <name>beans</name>
+    <description>beans</description>
+    <packaging>jar</packaging>
+    <dependencies>
+        <!-- MSob -->
+        <dependency>
+            <groupId>ir.msob.jima.process</groupId>
+            <artifactId>process-service</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+        <!-- Activiti -->
+        <dependency>
+            <groupId>org.activiti</groupId>
+            <artifactId>activiti-spring-boot-starter</artifactId>
+        </dependency>
+    </dependencies>
+</project>
