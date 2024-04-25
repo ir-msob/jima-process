@@ -9,10 +9,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import reactor.core.publisher.Mono;
 
-import java.io.Serializable;
 import java.util.Optional;
 
-public interface BaseProcessService<ID extends Comparable<ID> & Serializable, USER extends BaseUser<ID>, PR extends BaseProcessRepository> {
+public interface BaseProcessService<USER extends BaseUser, PR extends BaseProcessRepository> {
 
     PR getProcessRepository();
 

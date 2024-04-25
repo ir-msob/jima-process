@@ -26,9 +26,9 @@ import java.util.concurrent.ExecutionException;
 
 public interface BaseSaveDeploymentRestController<
         ID extends Comparable<ID> & Serializable,
-        USER extends BaseUser<ID>,
+        USER extends BaseUser,
         DR extends BaseDeploymentRepository,
-        S extends BaseDeploymentService<ID, USER, DR>>
+        S extends BaseDeploymentService<USER, DR>>
         extends ParentDeploymentRestController<ID, USER, DR, S> {
 
     Logger log = LoggerFactory.getLogger(BaseSaveDeploymentRestController.class);

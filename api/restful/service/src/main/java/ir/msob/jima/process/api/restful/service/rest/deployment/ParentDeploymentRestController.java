@@ -9,9 +9,9 @@ import java.io.Serializable;
 
 public interface ParentDeploymentRestController<
         ID extends Comparable<ID> & Serializable,
-        USER extends BaseUser<ID>,
+        USER extends BaseUser,
         DR extends BaseDeploymentRepository,
-        S extends BaseDeploymentService<ID, USER, DR>>
+        S extends BaseDeploymentService<USER, DR>>
         extends BaseRestResource<ID, USER> {
 
     S getService();

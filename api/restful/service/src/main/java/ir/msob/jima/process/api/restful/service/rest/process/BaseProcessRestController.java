@@ -8,9 +8,9 @@ import java.io.Serializable;
 
 public interface BaseProcessRestController<
         ID extends Comparable<ID> & Serializable,
-        USER extends BaseUser<ID>,
+        USER extends BaseUser,
         PR extends BaseProcessRepository,
-        S extends BaseProcessService<ID, USER, PR>>
+        S extends BaseProcessService<USER, PR>>
         extends
         BaseSaveProcessRestController<ID, USER, PR, S>,
         BaseDeleteProcessRestController<ID, USER, PR, S>,

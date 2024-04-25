@@ -9,10 +9,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import reactor.core.publisher.Mono;
 
-import java.io.Serializable;
 import java.util.Optional;
 
-public interface BaseTaskService<ID extends Comparable<ID> & Serializable, USER extends BaseUser<ID>, TR extends BaseTaskRepository> {
+public interface BaseTaskService<USER extends BaseUser, TR extends BaseTaskRepository> {
 
     TR getTaskRepository();
 

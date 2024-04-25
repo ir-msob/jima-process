@@ -10,10 +10,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import reactor.core.publisher.Mono;
 
-import java.io.Serializable;
 import java.util.Optional;
 
-public interface BaseDeploymentService<ID extends Comparable<ID> & Serializable, USER extends BaseUser<ID>, DR extends BaseDeploymentRepository> {
+public interface BaseDeploymentService<USER extends BaseUser, DR extends BaseDeploymentRepository> {
 
     BaseFileClient getFileClient();
 

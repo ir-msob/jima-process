@@ -23,9 +23,9 @@ import java.util.Optional;
 
 public interface BaseCompleteTaskRestController<
         ID extends Comparable<ID> & Serializable,
-        USER extends BaseUser<ID>,
+        USER extends BaseUser,
         TR extends BaseTaskRepository,
-        S extends BaseTaskService<ID, USER, TR>>
+        S extends BaseTaskService<USER, TR>>
         extends ParentTaskRestController<ID, USER, TR, S> {
 
     Logger log = LoggerFactory.getLogger(BaseCompleteTaskRestController.class);

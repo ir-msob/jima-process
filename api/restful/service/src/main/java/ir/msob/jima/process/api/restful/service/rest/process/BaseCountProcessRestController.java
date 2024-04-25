@@ -24,9 +24,9 @@ import java.util.Optional;
 
 public interface BaseCountProcessRestController<
         ID extends Comparable<ID> & Serializable,
-        USER extends BaseUser<ID>,
+        USER extends BaseUser,
         PR extends BaseProcessRepository,
-        S extends BaseProcessService<ID, USER, PR>>
+        S extends BaseProcessService<USER, PR>>
         extends ParentProcessRestController<ID, USER, PR, S> {
 
     Logger log = LoggerFactory.getLogger(BaseCountProcessRestController.class);

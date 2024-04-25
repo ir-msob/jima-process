@@ -18,7 +18,6 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Repository
 @RequiredArgsConstructor
@@ -83,7 +82,7 @@ public class DeploymentRepository implements BaseDeploymentRepository {
     }
 
     private List<DeploymentDto> prepareDeploymentDto(Collection<Deployment> deployments) {
-        return deployments.stream().map(deployment -> prepareDeploymentDto(deployment)).collect(Collectors.toList());
+        return deployments.stream().map(this::prepareDeploymentDto).toList();
     }
 
     private DeploymentDto prepareDeploymentDto(Deployment deployment) {

@@ -9,9 +9,9 @@ import java.io.Serializable;
 
 public interface ParentProcessRestController<
         ID extends Comparable<ID> & Serializable,
-        USER extends BaseUser<ID>,
+        USER extends BaseUser,
         PR extends BaseProcessRepository,
-        S extends BaseProcessService<ID, USER, PR>>
+        S extends BaseProcessService<USER, PR>>
         extends BaseRestResource<ID, USER> {
 
     S getService();

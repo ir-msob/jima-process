@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Repository
 @RequiredArgsConstructor
@@ -112,7 +111,7 @@ public class TaskRepository implements BaseTaskRepository {
     }
 
     private List<TaskDto> prepareTaskDto(Collection<Task> tasks) {
-        return tasks.stream().map(task -> prepareTaskDto(task)).collect(Collectors.toList());
+        return tasks.stream().map(this::prepareTaskDto).toList();
     }
 
     private TaskDto prepareTaskDto(Task task) {

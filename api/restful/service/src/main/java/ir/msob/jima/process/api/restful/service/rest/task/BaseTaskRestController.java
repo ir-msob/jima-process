@@ -8,9 +8,9 @@ import java.io.Serializable;
 
 public interface BaseTaskRestController<
         ID extends Comparable<ID> & Serializable,
-        USER extends BaseUser<ID>,
+        USER extends BaseUser,
         TR extends BaseTaskRepository,
-        S extends BaseTaskService<ID, USER, TR>>
+        S extends BaseTaskService<USER, TR>>
         extends
         BaseCompleteTaskRestController<ID, USER, TR, S>,
         BaseDeleteTaskRestController<ID, USER, TR, S>,
