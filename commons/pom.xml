@@ -5,7 +5,7 @@
     <parent>
         <groupId>ir.msob.jima.process</groupId>
         <artifactId>process-parent</artifactId>
-        <version>1.1.2</version>
+        <version>${jima-process.version}</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <artifactId>process-commons</artifactId>
@@ -15,7 +15,7 @@
         <dependency>
             <groupId>ir.msob.jima.core</groupId>
             <artifactId>core-commons</artifactId>
-            <version>${core-parent.version}</version>
+            <version>${jima-commons.version}</version>
         </dependency>
     </dependencies>
 
