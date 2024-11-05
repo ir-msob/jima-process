@@ -8,7 +8,6 @@ import org.activiti.engine.TaskService;
 import org.activiti.engine.task.DelegationState;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.task.TaskQuery;
-import org.apache.logging.log4j.util.Strings;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -32,15 +31,15 @@ public class TaskRepository implements BaseTaskRepository {
     }
 
     @Override
-    public Mono<TaskDto> complete(TaskCriteria criteria) {
+    public Mono<TaskDto> complete(TaskCriteria criteria, TaskDto dto) {
         return getOne(criteria)
-                .doOnSuccess(task -> taskService.complete(criteria.getId(), criteria.getVariables()));
+                .doOnSuccess(task -> taskService.complete(criteria.getId().getEq(), dto.getTaskVariables()));
     }
 
     @Override
-    public Mono<Boolean> delete(TaskCriteria criteria) {
-        taskService.deleteTask(criteria.getId(), true);
-        return Mono.just(true);
+    public Mono<String> delete(TaskCriteria criteria) {
+        taskService.deleteTask(criteria.getId().getEq(), true);
+        return Mono.just(criteria.getId().getEq());
     }
 
     @Override
@@ -67,28 +66,34 @@ public class TaskRepository implements BaseTaskRepository {
 
     private TaskQuery prepareTaskQuery(TaskCriteria criteria) {
         TaskQuery taskQuery = taskService.createTaskQuery();
-        if (Strings.isNotBlank(criteria.getId()))
-            taskQuery.taskId(criteria.getId());
-        if (Strings.isNotBlank(criteria.getName()))
-            taskQuery.taskName(criteria.getName());
-        if (Strings.isNotBlank(criteria.getDescription()))
-            taskQuery.taskDescription(criteria.getDescription());
-        if (criteria.getPriority() != null)
-            taskQuery.taskPriority(criteria.getPriority());
-        if (Strings.isNotBlank(criteria.getOwner()))
-            taskQuery.taskOwner(criteria.getOwner());
-        if (Strings.isNotBlank(criteria.getAssignee()))
-            taskQuery.taskAssignee(criteria.getAssignee());
-        if (criteria.getDueDate() != null)
-            taskQuery.taskDueDate(Date.from(criteria.getDueDate()));
-        if (Strings.isNotBlank(criteria.getCategory()))
-            taskQuery.taskCategory(criteria.getCategory());
-        if (Strings.isNotBlank(criteria.getParentTaskId()))
-            taskQuery.taskParentTaskId(criteria.getParentTaskId());
-        if (Strings.isNotBlank(criteria.getTenantId()))
-            taskQuery.taskTenantId(criteria.getTenantId());
-        if (criteria.isSuspended())
-            taskQuery.suspended();
+        if (criteria != null) {
+
+            if (criteria.getId() != null)
+                taskQuery.taskId(criteria.getId().getEq());
+            if (criteria.getName() != null)
+                taskQuery.taskName(criteria.getName().getEq());
+            if (criteria.getDescription() != null)
+                taskQuery.taskDescription(criteria.getDescription().getEq());
+            if (criteria.getPriority() != null)
+                taskQuery.taskPriority(criteria.getPriority().getEq());
+            if (criteria.getOwner() != null)
+                taskQuery.taskOwner(criteria.getOwner().getEq());
+            if (criteria.getAssignee() != null)
+                taskQuery.taskAssignee(criteria.getAssignee().getEq());
+            if (criteria.getDueDate() != null)
+                taskQuery.taskDueDate(Date.from(criteria.getDueDate().getEq()));
+            if (criteria.getCategory() != null)
+                taskQuery.taskCategory(criteria.getCategory().getEq());
+            if (criteria.getParentTaskId() != null)
+                taskQuery.taskParentTaskId(criteria.getParentTaskId().getEq());
+            if (criteria.getTenantId() != null)
+                taskQuery.taskTenantId(criteria.getTenantId().getEq());
+            if (criteria.getSuspended() != null) {
+                if (criteria.getSuspended().getEq()) {
+                    taskQuery.suspended();
+                }
+            }
+        }
         return taskQuery;
     }
 
@@ -107,6 +112,8 @@ public class TaskRepository implements BaseTaskRepository {
         task.setTenantId(dto.getTenantId());
         task.setFormKey(dto.getFormKey());
         task.setAppVersion(dto.getAppVersion());
+        task.getTaskLocalVariables().putAll(dto.getTaskVariables());
+        task.getProcessVariables().putAll(dto.getProcessVariables());
         return task;
     }
 
@@ -123,7 +130,7 @@ public class TaskRepository implements BaseTaskRepository {
         taskDto.setPriority(task.getPriority());
         taskDto.setOwner(task.getOwner());
         taskDto.setAssignee(task.getAssignee());
-        taskDto.setDelegationState(prepareDelegationState(task));
+        taskDto.setDelegationState(prepareDelegationState(task.getDelegationState()));
         if (task.getDueDate() != null)
             taskDto.setDueDate(task.getDueDate().toInstant());
         taskDto.setCategory(task.getCategory());
@@ -132,13 +139,15 @@ public class TaskRepository implements BaseTaskRepository {
         taskDto.setFormKey(task.getFormKey());
         taskDto.setAppVersion(task.getAppVersion());
         taskDto.setSuspended(task.isSuspended());
+        taskDto.setTaskVariables(task.getTaskLocalVariables());
+        taskDto.setProcessVariables(task.getProcessVariables());
         return taskDto;
     }
 
-    private TaskDto.DelegationState prepareDelegationState(Task task) {
-        if (task.getDelegationState() == DelegationState.PENDING)
+    private TaskDto.DelegationState prepareDelegationState(DelegationState delegationState) {
+        if (delegationState == DelegationState.PENDING)
             return TaskDto.DelegationState.PENDING;
-        else if (task.getDelegationState() == DelegationState.RESOLVED)
+        else if (delegationState == DelegationState.RESOLVED)
             return TaskDto.DelegationState.RESOLVED;
         return null;
     }

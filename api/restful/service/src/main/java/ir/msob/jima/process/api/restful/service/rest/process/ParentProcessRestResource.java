@@ -7,7 +7,7 @@ import ir.msob.jima.process.service.BaseProcessService;
 
 import java.io.Serializable;
 
-public interface ParentProcessRestController<
+public interface ParentProcessRestResource<
         ID extends Comparable<ID> & Serializable,
         USER extends BaseUser,
         PR extends BaseProcessRepository,

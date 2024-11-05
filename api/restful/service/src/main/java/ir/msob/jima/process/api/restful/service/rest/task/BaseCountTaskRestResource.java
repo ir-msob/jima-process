@@ -20,14 +20,14 @@ import java.io.Serializable;
 import java.security.Principal;
 import java.util.Optional;
 
-public interface BaseCountTaskRestController<
+public interface BaseCountTaskRestResource<
         ID extends Comparable<ID> & Serializable,
         USER extends BaseUser,
         TR extends BaseTaskRepository,
         S extends BaseTaskService<USER, TR>>
-        extends ParentTaskRestController<ID, USER, TR, S> {
+        extends ParentTaskRestResource<ID, USER, TR, S> {
 
-    Logger log = LoggerFactory.getLogger(BaseCountTaskRestController.class);
+    Logger log = LoggerFactory.getLogger(BaseCountTaskRestResource.class);
 
     @GetMapping(Operations.COUNT)
     @ApiResponses(value = {@ApiResponse(code = 200, message = "Return a domain or null"),

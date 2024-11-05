@@ -7,7 +7,6 @@ import lombok.RequiredArgsConstructor;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.DeploymentQuery;
-import org.apache.logging.log4j.util.Strings;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -27,15 +26,16 @@ public class DeploymentRepository implements BaseDeploymentRepository {
     @Override
     public Mono<DeploymentDto> save(DeploymentDto dto, InputStream inputStream) {
         Deployment deployment = repositoryService.createDeployment()
+                .name(dto.getName())
                 .key(dto.getKey())
                 .category(dto.getCategory())
-                .name(dto.getName())
                 .tenantId(dto.getTenantId())
                 .addInputStream(dto.getName() + Constants.BPMN_FILE_POSTFIX, inputStream)
                 .deploy();
         prepareDeploymentDto(dto, deployment);
         return Mono.just(dto);
     }
+
 
     @Override
     public Mono<Page<DeploymentDto>> getPage(DeploymentCriteria criteria, Pageable pageable) {
@@ -62,22 +62,49 @@ public class DeploymentRepository implements BaseDeploymentRepository {
     @Override
     public Mono<DeploymentDto> delete(DeploymentCriteria criteria) {
         Deployment deployment = prepareDeploymentQuery(criteria).latest().singleResult();
-        repositoryService.deleteDeployment(criteria.getId(), true);
+        repositoryService.deleteDeployment(criteria.getId().getEq(), true);
         return Mono.just(prepareDeploymentDto(deployment));
     }
 
     private DeploymentQuery prepareDeploymentQuery(DeploymentCriteria criteria) {
         DeploymentQuery deploymentQuery = repositoryService.createDeploymentQuery();
-        if (Strings.isNotBlank(criteria.getId()))
-            deploymentQuery.deploymentId(criteria.getId());
-        if (Strings.isNotBlank(criteria.getName()))
-            deploymentQuery.deploymentName(criteria.getName());
-        if (Strings.isNotBlank(criteria.getCategory()))
-            deploymentQuery.deploymentCategory(criteria.getCategory());
-        if (Strings.isNotBlank(criteria.getKey()))
-            deploymentQuery.deploymentKey(criteria.getKey());
-        if (Strings.isNotBlank(criteria.getTenantId()))
-            deploymentQuery.deploymentTenantId(criteria.getTenantId());
+        if (criteria != null) {
+            if (criteria.getId() != null)
+                deploymentQuery.deploymentId(criteria.getId().getEq());
+            if (criteria.getName() != null) {
+                if (criteria.getName().getEq() != null)
+                    deploymentQuery.deploymentName(criteria.getName().getEq());
+                else if (criteria.getName().getRegex() != null) {
+                    deploymentQuery.deploymentNameLike(criteria.getName().getRegex());
+                }
+            }
+            if (criteria.getCategory() != null) {
+                if (criteria.getCategory().getEq() != null)
+                    deploymentQuery.deploymentCategory(criteria.getCategory().getEq());
+                else if (criteria.getCategory().getRegex() != null) {
+                    deploymentQuery.deploymentCategoryLike(criteria.getCategory().getRegex());
+                } else if (criteria.getCategory().getNe() != null) {
+                    deploymentQuery.deploymentCategoryNotEquals(criteria.getCategory().getNe());
+                }
+            }
+            if (criteria.getKey() != null) {
+                if (criteria.getKey().getEq() != null)
+                    deploymentQuery.deploymentKey(criteria.getKey().getEq());
+                else if (criteria.getKey().getRegex() != null) {
+                    deploymentQuery.deploymentKeyLike(criteria.getKey().getRegex());
+                }
+            }
+            if (criteria.getTenantId() != null) {
+                if (criteria.getTenantId().getEq() != null)
+                    deploymentQuery.deploymentTenantId(criteria.getTenantId().getEq());
+                else if (criteria.getTenantId().getRegex() != null) {
+                    deploymentQuery.deploymentTenantIdLike(criteria.getTenantId().getRegex());
+                } else if (criteria.getTenantId().getExists() != null
+                        && !criteria.getTenantId().getExists()) {
+                    deploymentQuery.deploymentWithoutTenantId();
+                }
+            }
+        }
         return deploymentQuery;
     }
 
@@ -94,7 +121,7 @@ public class DeploymentRepository implements BaseDeploymentRepository {
     private void prepareDeploymentDto(DeploymentDto dto, Deployment deployment) {
         dto.setId(deployment.getId());
         dto.setName(deployment.getName());
-        dto.setDate(deployment.getDeploymentTime().toInstant());
+        dto.setDeploymentDate(deployment.getDeploymentTime().toInstant());
         dto.setCategory(deployment.getCategory());
         dto.setKey(deployment.getCategory());
         dto.setTenantId(deployment.getTenantId());

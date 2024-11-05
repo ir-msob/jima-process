@@ -9,7 +9,6 @@ import lombok.SneakyThrows;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.runtime.ProcessInstanceQuery;
-import org.apache.logging.log4j.util.Strings;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -35,35 +34,22 @@ public class ProcessRepository implements BaseProcessRepository {
                 .processDefinitionKey(dto.getKey())
                 .businessKey(dto.getBusinessKey())
                 .tenantId(dto.getTenantId())
-                .variables(dto.getVariables())
+                .variables(dto.getProcessVariables())
                 .transientVariables(dto.getTransientVariables())
                 .messageName(dto.getMessageName())
                 .start();
         return Mono.just(prepareProcessDto(processInstance));
     }
 
-//    private void duplicateCheck(ProcessDto dto) throws DuplicateException {
-//        if (dto.isDuplicateCheck()) {
-//            ProcessCriteria criteria = new ProcessCriteria();
-//            criteria.setKey(dto.getKey());
-//            criteria.setBusinessKey(dto.getBusinessKey());
-//
-//            ProcessInstanceQuery processInstanceQuery = prepareProcessInstanceQuery(criteria);
-//            long count = processInstanceQuery.count();
-//            if (count > 0) {
-//                DuplicateException.init("A process has already been executed for these key {} and businessKey {}.", dto.getKey(), dto.getBusinessKey());
-//            }
-//        }
-//    }
 
     @SneakyThrows
     @Override
-    public Mono<ProcessDto> start(ProcessDto dto) {
+    public Mono<ProcessDto> start(ProcessCriteria criteria, ProcessDto dto) {
         ProcessInstance processInstance = null;
-        if (Strings.isNotBlank(dto.getId())) {
-            processInstance = runtimeService.startProcessInstanceById(dto.getId(), dto.getVariables());
-        } else if (Strings.isNotBlank(dto.getKey())) {
-            processInstance = runtimeService.startProcessInstanceByKey(dto.getKey(), dto.getVariables());
+        if (criteria.getId() != null) {
+            processInstance = runtimeService.startProcessInstanceById(criteria.getId().getEq(), dto.getProcessVariables());
+        } else if (criteria.getKey() != null) {
+            processInstance = runtimeService.startProcessInstanceByKey(criteria.getKey().getEq(), dto.getProcessVariables());
         } else {
             BadRequestException.init("Cannot fount any deployment id or key {}", dto);
         }
@@ -71,20 +57,20 @@ public class ProcessRepository implements BaseProcessRepository {
     }
 
     @Override
-    public Mono<Boolean> delete(ProcessCriteria criteria) {
-        runtimeService.deleteProcessInstance(criteria.getId(), null);
-        return Mono.just(true);
+    public Mono<String> delete(ProcessCriteria criteria) {
+        runtimeService.deleteProcessInstance(criteria.getId().getEq(), null);
+        return Mono.just(criteria.getId().getEq());
     }
 
     @Override
     public Mono<Boolean> suspend(ProcessCriteria criteria) {
-        runtimeService.suspendProcessInstanceById(criteria.getId());
+        runtimeService.suspendProcessInstanceById(criteria.getId().getEq());
         return Mono.just(true);
     }
 
     @Override
     public Mono<Boolean> resume(ProcessCriteria criteria) {
-        runtimeService.activateProcessInstanceById(criteria.getId());
+        runtimeService.activateProcessInstanceById(criteria.getId().getEq());
         return Mono.just(true);
     }
 
@@ -113,24 +99,53 @@ public class ProcessRepository implements BaseProcessRepository {
 
     private ProcessInstanceQuery prepareProcessInstanceQuery(ProcessCriteria criteria) {
         ProcessInstanceQuery processInstanceQuery = runtimeService.createProcessInstanceQuery();
-        if (Strings.isNotBlank(criteria.getId()))
-            processInstanceQuery.processInstanceId(criteria.getId());
-        if (criteria.isSuspended())
-            processInstanceQuery.suspended();
-        if (Strings.isNotBlank(criteria.getName()))
-            processInstanceQuery.processInstanceName(criteria.getName());
-        if (Strings.isNotBlank(criteria.getKey()))
-            processInstanceQuery.processDefinitionKey(criteria.getKey());
-        if (criteria.getVersion() != null)
-            processInstanceQuery.processDefinitionVersion(criteria.getVersion());
-        if (Strings.isNotBlank(criteria.getDeploymentId()))
-            processInstanceQuery.deploymentId(criteria.getDeploymentId());
-        if (Strings.isNotBlank(criteria.getBusinessKey()))
-            processInstanceQuery.processInstanceBusinessKey(criteria.getBusinessKey());
-        if (Strings.isNotBlank(criteria.getTenantId()))
-            processInstanceQuery.processInstanceTenantId(criteria.getTenantId());
-        if (Strings.isNotBlank(criteria.getStartUserId()))
-            processInstanceQuery.involvedUser(criteria.getStartUserId());
+        if (criteria != null) {
+            if (criteria.getId() != null) {
+                if (criteria.getId().getEq() != null)
+                    processInstanceQuery.processInstanceId(criteria.getId().getEq());
+                else if (criteria.getId().getIn() != null) {
+                    processInstanceQuery.processInstanceIds(criteria.getId().getIn());
+                }
+            }
+            if (criteria.getSuspended() != null) {
+                if (criteria.getSuspended().getEq()) {
+                    processInstanceQuery.suspended();
+                }
+            }
+            if (criteria.getName() != null)
+                if (criteria.getName().getEq() != null) {
+                    processInstanceQuery.processInstanceName(criteria.getName().getEq());
+                } else if (criteria.getName().getRegex() != null) {
+                    processInstanceQuery.processInstanceNameLike(criteria.getName().getRegex());
+                }
+            if (criteria.getKey() != null) {
+                if (criteria.getKey().getEq() != null)
+                    processInstanceQuery.processDefinitionKey(criteria.getKey().getEq());
+                else if (criteria.getKey().getIn() != null) {
+                    processInstanceQuery.processDefinitionKeys(criteria.getKey().getIn());
+                }
+            }
+            if (criteria.getVersion() != null)
+                processInstanceQuery.processDefinitionVersion(criteria.getVersion().getEq());
+            if (criteria.getDeploymentId() != null) {
+                if (criteria.getDeploymentId().getEq() != null)
+                    processInstanceQuery.deploymentId(criteria.getDeploymentId().getEq());
+                else if (criteria.getDeploymentId().getIn() != null) {
+                    processInstanceQuery.deploymentIdIn(criteria.getDeploymentId().getIn().stream().toList());
+                }
+            }
+            if (criteria.getBusinessKey() != null)
+                processInstanceQuery.processInstanceBusinessKey(criteria.getBusinessKey().getEq());
+            if (criteria.getTenantId() != null) {
+                if (criteria.getTenantId().getEq() != null)
+                    processInstanceQuery.processInstanceTenantId(criteria.getTenantId().getEq());
+                else if (criteria.getTenantId().getIn() != null) {
+                    processInstanceQuery.processInstanceTenantIdLike(criteria.getTenantId().getRegex());
+                }
+            }
+            if (criteria.getStartUserId() != null)
+                processInstanceQuery.involvedUser(criteria.getStartUserId().getEq());
+        }
         return processInstanceQuery;
     }
 
@@ -148,7 +163,7 @@ public class ProcessRepository implements BaseProcessRepository {
         processDto.setDeploymentId(processInstance.getDeploymentId());
         processDto.setBusinessKey(processInstance.getBusinessKey());
         processDto.setSuspended(processInstance.isSuspended());
-        processDto.setVariables(processInstance.getProcessVariables());
+        processDto.setProcessVariables(processInstance.getProcessVariables());
         processDto.setTenantId(processInstance.getTenantId());
         processDto.setLocalizedName(processInstance.getLocalizedName());
         processDto.setLocalizedDescription(processInstance.getLocalizedDescription());

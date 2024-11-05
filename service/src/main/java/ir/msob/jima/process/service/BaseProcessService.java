@@ -1,6 +1,7 @@
 package ir.msob.jima.process.service;
 
 import ir.msob.jima.core.commons.annotation.methodstats.MethodStats;
+import ir.msob.jima.core.commons.model.criteria.filter.Filter;
 import ir.msob.jima.core.commons.security.BaseUser;
 import ir.msob.jima.process.commons.criteria.ProcessCriteria;
 import ir.msob.jima.process.commons.dto.ProcessDto;
@@ -21,28 +22,70 @@ public interface BaseProcessService<USER extends BaseUser, PR extends BaseProces
     }
 
     @MethodStats
-    default Mono<ProcessDto> start(ProcessDto dto, Optional<USER> user) {
-        return getProcessRepository().start(dto);
+    default Mono<ProcessDto> start(ProcessCriteria criteria, ProcessDto dto, Optional<USER> user) {
+        return getProcessRepository().start(criteria, dto);
     }
 
     @MethodStats
-    default Mono<Boolean> delete(ProcessCriteria criteria, Optional<USER> user) {
+    default Mono<ProcessDto> startById(String id, ProcessDto dto, Optional<USER> user) {
+        ProcessCriteria criteria = ProcessCriteria.builder()
+                .id(Filter.eq(id))
+                .build();
+        return start(criteria, dto, user);
+    }
+
+    @MethodStats
+    default Mono<String> delete(ProcessCriteria criteria, Optional<USER> user) {
         return getProcessRepository().delete(criteria);
     }
 
     @MethodStats
-    default Mono<Boolean> suspend(ProcessCriteria criteria, Optional<USER> user) {
-        return getProcessRepository().suspend(criteria);
+    default Mono<String> deleteById(String id, Optional<USER> user) {
+        ProcessCriteria criteria = ProcessCriteria.builder()
+                .id(Filter.eq(id))
+                .build();
+        return delete(criteria, user);
     }
 
     @MethodStats
-    default Mono<Boolean> resume(ProcessCriteria criteria, Optional<USER> user) {
-        return getProcessRepository().resume(criteria);
+    default Mono<ProcessDto> suspend(ProcessCriteria criteria, Optional<USER> user) {
+        return getProcessRepository().suspend(criteria)
+                .then(getOne(criteria, user));
+    }
+
+    @MethodStats
+    default Mono<ProcessDto> suspendById(String id, Optional<USER> user) {
+        ProcessCriteria criteria = ProcessCriteria.builder()
+                .id(Filter.eq(id))
+                .build();
+        return suspend(criteria, user);
+    }
+
+    @MethodStats
+    default Mono<ProcessDto> resume(ProcessCriteria criteria, Optional<USER> user) {
+        return getProcessRepository().resume(criteria)
+                .then(getOne(criteria, user));
+    }
+
+    @MethodStats
+    default Mono<ProcessDto> resumeById(String id, Optional<USER> user) {
+        ProcessCriteria criteria = ProcessCriteria.builder()
+                .id(Filter.eq(id))
+                .build();
+        return resume(criteria, user);
     }
 
     @MethodStats
     default Mono<ProcessDto> getOne(ProcessCriteria criteria, Optional<USER> user) {
         return getProcessRepository().getOne(criteria);
+    }
+
+    @MethodStats
+    default Mono<ProcessDto> getById(String id, Optional<USER> user) {
+        ProcessCriteria criteria = ProcessCriteria.builder()
+                .id(Filter.eq(id))
+                .build();
+        return getOne(criteria, user);
     }
 
     @MethodStats

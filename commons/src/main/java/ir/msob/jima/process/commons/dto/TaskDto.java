@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 
 import java.time.Instant;
+import java.util.Map;
 
 @Setter
 @Getter
@@ -29,6 +30,8 @@ public class TaskDto {
     private String formKey;
     private boolean suspended;
     private Integer appVersion;
+    private Map<String, Object> taskVariables;
+    private Map<String, Object> processVariables;
 
     public enum DelegationState {
         PENDING,

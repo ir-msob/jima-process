@@ -22,7 +22,7 @@ public class ProcessDto {
     private String deploymentId;
     private String businessKey;
     private boolean suspended;
-    private Map<String, Object> variables;
+    private Map<String, Object> processVariables;
     private String tenantId;
     private Map<String, Object> transientVariables;
     private String localizedName;

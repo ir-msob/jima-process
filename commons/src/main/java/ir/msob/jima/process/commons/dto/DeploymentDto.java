@@ -15,11 +15,11 @@ import java.time.Instant;
 public class DeploymentDto {
     private String id;
     private String name;
-    private String filePath;
-    private Instant date;
-    private String category;
     private String key;
+    private String filePath;
+    private String category;
     private String tenantId;
     private Integer version;
     private String projectReleaseVersion;
+    private Instant deploymentDate;
 }

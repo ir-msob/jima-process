@@ -1,6 +1,7 @@
 package ir.msob.jima.process.commons.criteria;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import ir.msob.jima.core.commons.model.criteria.filter.Filter;
 import lombok.*;
 
 import java.time.Instant;
@@ -13,13 +14,13 @@ import java.time.Instant;
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class DeploymentCriteria {
-    private String id;
-    private String name;
-    private String filePath;
-    private Instant date;
-    private String category;
-    private String key;
-    private String tenantId;
-    private Integer version;
-    private String projectReleaseVersion;
+    private Filter<String> id;
+    private Filter<String> name;
+    private Filter<String> filePath;
+    private Filter<Instant> deploymentDate;
+    private Filter<String> category;
+    private Filter<String> key;
+    private Filter<String> tenantId;
+    private Filter<Integer> version;
+    private Filter<String> projectReleaseVersion;
 }

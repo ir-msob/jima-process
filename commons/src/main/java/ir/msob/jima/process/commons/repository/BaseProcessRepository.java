@@ -10,9 +10,9 @@ public interface BaseProcessRepository {
 
     Mono<ProcessDto> save(ProcessDto dto);
 
-    Mono<ProcessDto> start(ProcessDto dto);
+    Mono<ProcessDto> start(ProcessCriteria criteria, ProcessDto dto);
 
-    Mono<Boolean> delete(ProcessCriteria criteria);
+    Mono<String> delete(ProcessCriteria criteria);
 
     Mono<Boolean> suspend(ProcessCriteria criteria);
 

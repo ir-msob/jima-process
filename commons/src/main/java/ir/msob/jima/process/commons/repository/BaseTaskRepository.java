@@ -10,9 +10,9 @@ public interface BaseTaskRepository {
 
     Mono<TaskDto> save(TaskDto dto);
 
-    Mono<TaskDto> complete(TaskCriteria criteria);
+    Mono<TaskDto> complete(TaskCriteria criteria, TaskDto dto);
 
-    Mono<Boolean> delete(TaskCriteria criteria);
+    Mono<String> delete(TaskCriteria criteria);
 
     Mono<TaskDto> getOne(TaskCriteria criteria);
 

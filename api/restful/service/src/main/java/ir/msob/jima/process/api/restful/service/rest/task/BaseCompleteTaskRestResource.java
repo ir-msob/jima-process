@@ -14,39 +14,39 @@ import ir.msob.jima.process.service.BaseTaskService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import reactor.core.publisher.Mono;
 
 import java.io.Serializable;
 import java.security.Principal;
 import java.util.Optional;
 
-public interface BaseGetOneTaskRestController<
+public interface BaseCompleteTaskRestResource<
         ID extends Comparable<ID> & Serializable,
         USER extends BaseUser,
         TR extends BaseTaskRepository,
         S extends BaseTaskService<USER, TR>>
-        extends ParentTaskRestController<ID, USER, TR, S> {
+        extends ParentTaskRestResource<ID, USER, TR, S> {
 
-    Logger log = LoggerFactory.getLogger(BaseGetOneTaskRestController.class);
+    Logger log = LoggerFactory.getLogger(BaseCompleteTaskRestResource.class);
 
-    @GetMapping(Operations.GET_ONE)
+    @PostMapping(Operations.COMPLETE)
     @ApiResponses(value = {@ApiResponse(code = 200, message = "Return a domain or null"),
             @ApiResponse(code = 400, message = "If the validation operation is incorrect throws BadRequestException otherwise nothing", response = BadRequestResponse.class)})
-    @Scope(Operations.GET_ONE)
+    @Scope(Operations.COMPLETE)
     @MethodStats
-    default ResponseEntity<Mono<TaskDto>> getOne(TaskCriteria criteria, Principal principal) {
-        log.debug("REST request to get one task, criteria {}", criteria);
+    default ResponseEntity<Mono<TaskDto>> complete(TaskCriteria criteria, TaskDto dto, Principal principal) {
+        log.debug("REST request to complete task, criteria {}, dto {}", criteria, dto);
 
         /*
          * Init user data from request
          */
         Optional<USER> user = getUser(principal);
 
-        return this.getOneResponse(this.getService().getOne(criteria, user), user);
+        return this.completeResponse(this.getService().complete(criteria, dto, user), user);
     }
 
-    default ResponseEntity<Mono<TaskDto>> getOneResponse(Mono<TaskDto> result, Optional<USER> user) {
+    default ResponseEntity<Mono<TaskDto>> completeResponse(Mono<TaskDto> result, Optional<USER> user) {
         return ResponseEntity.ok(result);
     }
 }

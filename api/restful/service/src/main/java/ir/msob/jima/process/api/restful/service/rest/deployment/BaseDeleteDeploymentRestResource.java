@@ -14,7 +14,7 @@ import ir.msob.jima.process.service.BaseDeploymentService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
@@ -22,32 +22,32 @@ import java.io.Serializable;
 import java.security.Principal;
 import java.util.Optional;
 
-public interface BaseCountDeploymentRestController<
+public interface BaseDeleteDeploymentRestResource<
         ID extends Comparable<ID> & Serializable,
         USER extends BaseUser,
         DR extends BaseDeploymentRepository,
         S extends BaseDeploymentService<USER, DR>>
-        extends ParentDeploymentRestController<ID, USER, DR, S> {
+        extends ParentDeploymentRestResource<ID, USER, DR, S> {
 
-    Logger log = LoggerFactory.getLogger(BaseCountDeploymentRestController.class);
+    Logger log = LoggerFactory.getLogger(BaseDeleteDeploymentRestResource.class);
 
-    @GetMapping(Operations.COUNT)
+    @DeleteMapping(Operations.DELETE)
     @ApiResponses(value = {@ApiResponse(code = 200, message = "Return a domain or null"),
             @ApiResponse(code = 400, message = "If the validation operation is incorrect throws BadRequestException otherwise nothing", response = BadRequestResponse.class)})
-    @Scope(Operations.COUNT)
+    @Scope(Operations.DELETE)
     @MethodStats
-    default ResponseEntity<Mono<Long>> count(DeploymentCriteria criteria, ServerWebExchange serverWebExchange, Principal principal) throws JsonProcessingException {
-        log.debug("REST request to count deployment, criteria {}", criteria);
+    default ResponseEntity<Mono<String>> delete(DeploymentCriteria criteria, ServerWebExchange serverWebExchange, Principal principal) throws JsonProcessingException {
+        log.debug("REST request to delete deployment, criteria {}", criteria);
 
         /*
          * Init user data from request
          */
         Optional<USER> user = getUser(serverWebExchange, principal);
 
-        return this.countResponse(this.getService().count(criteria, user), user);
+        return this.deleteResponse(this.getService().delete(criteria, user), user);
     }
 
-    default ResponseEntity<Mono<Long>> countResponse(Mono<Long> result, Optional<USER> user) {
+    default ResponseEntity<Mono<String>> deleteResponse(Mono<String> result, Optional<USER> user) {
         return ResponseEntity.ok(result);
     }
 }

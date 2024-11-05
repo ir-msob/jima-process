@@ -7,9 +7,12 @@ toc::[]
 
 == Introduction
 
-Jima Process is a part of Jima framework that facilitates the management and execution of computational tasks and workflows in a distributed or multi-threaded environment. It provides a way to define, schedule, and coordinate the execution of complex computational processes across multiple nodes or services within a system.
+Jima Process is a part of Jima framework that facilitates the management and execution of computational tasks and workflows in a distributed or multi-threaded environment.
+It provides a way to define, schedule, and coordinate the execution of complex computational processes across multiple nodes or services within a system.
 
-In the context of microservices architecture, a processing framework can be used to orchestrate the execution of diverse computational tasks and workflows across different microservices. This is particularly valuable in scenarios where complex data processing, transformation, or analysis is required, such as batch processing, data enrichment, or real-time analytics. By using a processing framework, developers can streamline the execution of computational tasks and workflows, optimizing resource utilization and improving overall system efficiency.
+In the context of microservices architecture, a processing framework can be used to orchestrate the execution of diverse computational tasks and workflows across different microservices.
+This is particularly valuable in scenarios where complex data processing, transformation, or analysis is required, such as batch processing, data enrichment, or real-time analytics.
+By using a processing framework, developers can streamline the execution of computational tasks and workflows, optimizing resource utilization and improving overall system efficiency.
 
 Overall, Jima Process plays a pivotal role in enabling the efficient execution and coordination of computational tasks and workflows within a distributed system, contributing to the scalability and agility of the overall architecture.
 

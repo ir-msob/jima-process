@@ -1,4 +1,4 @@
-package ir.msob.jima.process.api.restful.service.rest.process;
+package ir.msob.jima.process.api.restful.service.rest.deployment;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import io.swagger.annotations.ApiResponse;
@@ -8,11 +8,14 @@ import ir.msob.jima.core.commons.exception.badrequest.BadRequestResponse;
 import ir.msob.jima.core.commons.model.scope.Scope;
 import ir.msob.jima.core.commons.operation.Operations;
 import ir.msob.jima.core.commons.security.BaseUser;
-import ir.msob.jima.process.commons.criteria.ProcessCriteria;
-import ir.msob.jima.process.commons.repository.BaseProcessRepository;
-import ir.msob.jima.process.service.BaseProcessService;
+import ir.msob.jima.process.commons.criteria.DeploymentCriteria;
+import ir.msob.jima.process.commons.dto.DeploymentDto;
+import ir.msob.jima.process.commons.repository.BaseDeploymentRepository;
+import ir.msob.jima.process.service.BaseDeploymentService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.server.ServerWebExchange;
@@ -22,32 +25,32 @@ import java.io.Serializable;
 import java.security.Principal;
 import java.util.Optional;
 
-public interface BaseCountProcessRestController<
+public interface BaseGetPageDeploymentRestResource<
         ID extends Comparable<ID> & Serializable,
         USER extends BaseUser,
-        PR extends BaseProcessRepository,
-        S extends BaseProcessService<USER, PR>>
-        extends ParentProcessRestController<ID, USER, PR, S> {
+        DR extends BaseDeploymentRepository,
+        S extends BaseDeploymentService<USER, DR>>
+        extends ParentDeploymentRestResource<ID, USER, DR, S> {
 
-    Logger log = LoggerFactory.getLogger(BaseCountProcessRestController.class);
+    Logger log = LoggerFactory.getLogger(BaseGetPageDeploymentRestResource.class);
 
-    @GetMapping(Operations.COUNT)
+    @GetMapping(Operations.GET_PAGE)
     @ApiResponses(value = {@ApiResponse(code = 200, message = "Return a domain or null"),
             @ApiResponse(code = 400, message = "If the validation operation is incorrect throws BadRequestException otherwise nothing", response = BadRequestResponse.class)})
-    @Scope(Operations.COUNT)
+    @Scope(Operations.GET_PAGE)
     @MethodStats
-    default ResponseEntity<Mono<Long>> count(ProcessCriteria criteria, ServerWebExchange serverWebExchange, Principal principal) throws JsonProcessingException {
-        log.debug("REST request to count process, criteria {}", criteria);
+    default ResponseEntity<Mono<Page<DeploymentDto>>> getPage(DeploymentCriteria criteria, Pageable pageable, ServerWebExchange serverWebExchange, Principal principal) throws JsonProcessingException {
+        log.debug("REST request to get one deployment, criteria {}", criteria);
 
         /*
          * Init user data from request
          */
         Optional<USER> user = getUser(serverWebExchange, principal);
 
-        return this.countResponse(this.getService().count(criteria, user), user);
+        return this.getPageResponse(this.getService().getPage(criteria, pageable, user), user);
     }
 
-    default ResponseEntity<Mono<Long>> countResponse(Mono<Long> result, Optional<USER> user) {
+    default ResponseEntity<Mono<Page<DeploymentDto>>> getPageResponse(Mono<Page<DeploymentDto>> result, Optional<USER> user) {
         return ResponseEntity.ok(result);
     }
 }
