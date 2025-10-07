@@ -1,7 +1,7 @@
 package ir.msob.jima.process.commons.criteria;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import ir.msob.jima.core.commons.model.criteria.filter.Filter;
+import ir.msob.jima.core.commons.criteria.filter.Filter;
 import lombok.*;
 
 import java.io.Serializable;
@@ -25,9 +25,9 @@ public class ProcessCriteria {
     private Filter<String> deploymentId;
     private Filter<String> businessKey;
     private Filter<Boolean> suspended = Filter.eq(false);
-    private Map<String, Filter<Serializable>> variables = new HashMap<>();
+    private Map<String, Filter<? extends Serializable>> variables = new HashMap<>();
     private Filter<String> tenantId;
-    private Map<String, Filter<Serializable>> transientVariables = new HashMap<>();
+    private Map<String, Filter<? extends Serializable>> transientVariables = new HashMap<>();
     private Filter<String> localizedName;
     private Filter<String> localizedDescription;
     private Filter<Instant> startDate;

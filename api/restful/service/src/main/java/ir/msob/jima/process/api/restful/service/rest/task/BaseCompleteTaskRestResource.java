@@ -2,10 +2,10 @@ package ir.msob.jima.process.api.restful.service.rest.task;
 
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-import ir.msob.jima.core.commons.annotation.methodstats.MethodStats;
 import ir.msob.jima.core.commons.exception.badrequest.BadRequestResponse;
-import ir.msob.jima.core.commons.model.scope.Scope;
+import ir.msob.jima.core.commons.methodstats.MethodStats;
 import ir.msob.jima.core.commons.operation.Operations;
+import ir.msob.jima.core.commons.scope.Scope;
 import ir.msob.jima.core.commons.security.BaseUser;
 import ir.msob.jima.process.commons.criteria.TaskCriteria;
 import ir.msob.jima.process.commons.dto.TaskDto;
@@ -19,7 +19,6 @@ import reactor.core.publisher.Mono;
 
 import java.io.Serializable;
 import java.security.Principal;
-import java.util.Optional;
 
 public interface BaseCompleteTaskRestResource<
         ID extends Comparable<ID> & Serializable,
@@ -33,7 +32,7 @@ public interface BaseCompleteTaskRestResource<
     @PostMapping(Operations.COMPLETE)
     @ApiResponses(value = {@ApiResponse(code = 200, message = "Return a domain or null"),
             @ApiResponse(code = 400, message = "If the validation operation is incorrect throws BadRequestException otherwise nothing", response = BadRequestResponse.class)})
-    @Scope(Operations.COMPLETE)
+    @Scope(operation = Operations.COMPLETE)
     @MethodStats
     default ResponseEntity<Mono<TaskDto>> complete(TaskCriteria criteria, TaskDto dto, Principal principal) {
         log.debug("REST request to complete task, criteria {}, dto {}", criteria, dto);
@@ -41,12 +40,12 @@ public interface BaseCompleteTaskRestResource<
         /*
          * Init user data from request
          */
-        Optional<USER> user = getUser(principal);
+        USER user = getUser(principal);
 
         return this.completeResponse(this.getService().complete(criteria, dto, user), user);
     }
 
-    default ResponseEntity<Mono<TaskDto>> completeResponse(Mono<TaskDto> result, Optional<USER> user) {
+    default ResponseEntity<Mono<TaskDto>> completeResponse(Mono<TaskDto> result, USER user) {
         return ResponseEntity.ok(result);
     }
 }

@@ -2,12 +2,12 @@ package ir.msob.jima.process.api.restful.service.rest.deployment;
 
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-import ir.msob.jima.core.commons.annotation.methodstats.MethodStats;
 import ir.msob.jima.core.commons.exception.badrequest.BadRequestException;
 import ir.msob.jima.core.commons.exception.badrequest.BadRequestResponse;
 import ir.msob.jima.core.commons.exception.domainnotfound.DomainNotFoundException;
-import ir.msob.jima.core.commons.model.scope.Scope;
+import ir.msob.jima.core.commons.methodstats.MethodStats;
 import ir.msob.jima.core.commons.operation.Operations;
+import ir.msob.jima.core.commons.scope.Scope;
 import ir.msob.jima.core.commons.security.BaseUser;
 import ir.msob.jima.process.commons.repository.BaseDeploymentRepository;
 import ir.msob.jima.process.service.BaseDeploymentService;
@@ -21,7 +21,6 @@ import reactor.core.publisher.Mono;
 
 import java.io.Serializable;
 import java.security.Principal;
-import java.util.Optional;
 
 public interface BaseDeleteByIdDeploymentRestResource<
         ID extends Comparable<ID> & Serializable,
@@ -39,19 +38,19 @@ public interface BaseDeleteByIdDeploymentRestResource<
             @ApiResponse(code = 404, message = "Domain not found", response = DomainNotFoundException.class)
     })
     @MethodStats
-    @Scope(Operations.DELETE_BY_ID)
+    @Scope(operation = Operations.DELETE_BY_ID)
     default ResponseEntity<Mono<String>> deleteById(@PathVariable("id") String id, ServerWebExchange serverWebExchange, Principal principal) throws BadRequestException, DomainNotFoundException {
         log.debug("REST request to delete deployment by id, id {}", id);
 
         /*
          * Init user data from request
          */
-        Optional<USER> user = getUser(serverWebExchange, principal);
+        USER user = getUser(serverWebExchange, principal);
 
         return this.deleteByIdResponse(this.getService().deleteById(id, user), user);
     }
 
-    default ResponseEntity<Mono<String>> deleteByIdResponse(Mono<String> result, Optional<USER> user) {
+    default ResponseEntity<Mono<String>> deleteByIdResponse(Mono<String> result, USER user) {
         return ResponseEntity.ok(result);
     }
 }

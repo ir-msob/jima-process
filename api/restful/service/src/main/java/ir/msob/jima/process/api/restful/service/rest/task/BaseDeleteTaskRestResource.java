@@ -2,10 +2,10 @@ package ir.msob.jima.process.api.restful.service.rest.task;
 
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-import ir.msob.jima.core.commons.annotation.methodstats.MethodStats;
 import ir.msob.jima.core.commons.exception.badrequest.BadRequestResponse;
-import ir.msob.jima.core.commons.model.scope.Scope;
+import ir.msob.jima.core.commons.methodstats.MethodStats;
 import ir.msob.jima.core.commons.operation.Operations;
+import ir.msob.jima.core.commons.scope.Scope;
 import ir.msob.jima.core.commons.security.BaseUser;
 import ir.msob.jima.process.commons.criteria.TaskCriteria;
 import ir.msob.jima.process.commons.repository.BaseTaskRepository;
@@ -18,7 +18,6 @@ import reactor.core.publisher.Mono;
 
 import java.io.Serializable;
 import java.security.Principal;
-import java.util.Optional;
 
 public interface BaseDeleteTaskRestResource<
         ID extends Comparable<ID> & Serializable,
@@ -32,7 +31,7 @@ public interface BaseDeleteTaskRestResource<
     @DeleteMapping(Operations.DELETE)
     @ApiResponses(value = {@ApiResponse(code = 200, message = "Return a domain or null"),
             @ApiResponse(code = 400, message = "If the validation operation is incorrect throws BadRequestException otherwise nothing", response = BadRequestResponse.class)})
-    @Scope(Operations.DELETE)
+    @Scope(operation = Operations.DELETE)
     @MethodStats
     default ResponseEntity<Mono<String>> delete(TaskCriteria criteria, Principal principal) {
         log.debug("REST request to delete task, criteria {}", criteria);
@@ -40,12 +39,12 @@ public interface BaseDeleteTaskRestResource<
         /*
          * Init user data from request
          */
-        Optional<USER> user = getUser(principal);
+        USER user = getUser(principal);
 
         return this.deleteResponse(this.getService().delete(criteria, user), user);
     }
 
-    default ResponseEntity<Mono<String>> deleteResponse(Mono<String> result, Optional<USER> user) {
+    default ResponseEntity<Mono<String>> deleteResponse(Mono<String> result, USER user) {
         return ResponseEntity.ok(result);
     }
 }

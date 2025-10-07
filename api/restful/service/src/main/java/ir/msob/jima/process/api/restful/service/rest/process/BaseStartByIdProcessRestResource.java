@@ -3,10 +3,10 @@ package ir.msob.jima.process.api.restful.service.rest.process;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-import ir.msob.jima.core.commons.annotation.methodstats.MethodStats;
 import ir.msob.jima.core.commons.exception.badrequest.BadRequestResponse;
-import ir.msob.jima.core.commons.model.scope.Scope;
+import ir.msob.jima.core.commons.methodstats.MethodStats;
 import ir.msob.jima.core.commons.operation.Operations;
+import ir.msob.jima.core.commons.scope.Scope;
 import ir.msob.jima.core.commons.security.BaseUser;
 import ir.msob.jima.process.commons.dto.ProcessDto;
 import ir.msob.jima.process.commons.repository.BaseProcessRepository;
@@ -22,7 +22,6 @@ import reactor.core.publisher.Mono;
 
 import java.io.Serializable;
 import java.security.Principal;
-import java.util.Optional;
 
 public interface BaseStartByIdProcessRestResource<
         ID extends Comparable<ID> & Serializable,
@@ -36,7 +35,7 @@ public interface BaseStartByIdProcessRestResource<
     @PostMapping("{id}/start")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "Return a domain or null"),
             @ApiResponse(code = 400, message = "If the validation operation is incorrect throws BadRequestException otherwise nothing", response = BadRequestResponse.class)})
-    @Scope(Operations.START_BY_ID)
+    @Scope(operation = Operations.START_BY_ID)
     @MethodStats
     default ResponseEntity<Mono<ProcessDto>> startById(@PathVariable("id") String id, @RequestBody ProcessDto dto, ServerWebExchange serverWebExchange, Principal principal) throws JsonProcessingException {
         log.debug("REST request to start process, id {}, dto {}", id, dto);
@@ -44,12 +43,12 @@ public interface BaseStartByIdProcessRestResource<
         /*
          * Init user data from request
          */
-        Optional<USER> user = getUser(serverWebExchange, principal);
+        USER user = getUser(serverWebExchange, principal);
 
         return this.startByIdResponse(this.getService().startById(id, dto, user), user);
     }
 
-    default ResponseEntity<Mono<ProcessDto>> startByIdResponse(Mono<ProcessDto> result, Optional<USER> user) {
+    default ResponseEntity<Mono<ProcessDto>> startByIdResponse(Mono<ProcessDto> result, USER user) {
         return ResponseEntity.ok(result);
     }
 }

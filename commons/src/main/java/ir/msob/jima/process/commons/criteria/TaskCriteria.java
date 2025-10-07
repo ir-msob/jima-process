@@ -1,7 +1,7 @@
 package ir.msob.jima.process.commons.criteria;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import ir.msob.jima.core.commons.model.criteria.filter.Filter;
+import ir.msob.jima.core.commons.criteria.filter.Filter;
 import ir.msob.jima.process.commons.dto.TaskDto;
 import lombok.*;
 
@@ -34,6 +34,6 @@ public class TaskCriteria {
     private Filter<String> formKey;
     private Filter<Boolean> suspended = Filter.eq(false);
     private Filter<Integer> appVersion;
-    private Map<String, Filter<Serializable>> taskVariables = new HashMap<>();
-    private Map<String, Filter<Serializable>> processVariables = new HashMap<>();
+    private Map<String, Filter<? extends Serializable>> taskVariables = new HashMap<>();
+    private Map<String, Filter<? extends Serializable>> processVariables = new HashMap<>();
 }
