@@ -11,7 +11,7 @@
     <artifactId>process-starter-activiti</artifactId>
     <name>activiti</name>
     <description>activiti</description>
-    <packaging>pom</packaging>
+    <packaging>jar</packaging>
     <dependencies>
         <dependency>
             <groupId>ir.msob.jima.process</groupId>

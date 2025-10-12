@@ -1,21 +1,22 @@
 package ir.msob.jima.process.commons.repository;
 
-import ir.msob.jima.process.commons.criteria.DeploymentCriteria;
-import ir.msob.jima.process.commons.dto.DeploymentDto;
+import ir.msob.jima.core.commons.repository.BaseRepository;
+import ir.msob.jima.process.commons.criteria.BaseDeploymentCriteria;
+import ir.msob.jima.process.commons.domain.BaseDeployment;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import reactor.core.publisher.Mono;
 
 import java.io.InputStream;
 
-public interface BaseDeploymentRepository {
-    Mono<DeploymentDto> save(DeploymentDto dto, InputStream inputStream);
+public interface BaseDeploymentRepository<D extends BaseDeployment, C extends BaseDeploymentCriteria> extends BaseRepository<String, D> {
+    Mono<D> save(D dto, InputStream inputStream);
 
-    Mono<Page<DeploymentDto>> getPage(DeploymentCriteria criteria, Pageable pageable);
+    Mono<Page<D>> getPage(C criteria, Pageable pageable);
 
-    Mono<DeploymentDto> getOne(DeploymentCriteria criteria);
+    Mono<D> getOne(C criteria);
 
-    Mono<Long> count(DeploymentCriteria criteria);
+    Mono<Long> count(C criteria);
 
-    Mono<DeploymentDto> delete(DeploymentCriteria criteria);
+    Mono<D> delete(C criteria);
 }

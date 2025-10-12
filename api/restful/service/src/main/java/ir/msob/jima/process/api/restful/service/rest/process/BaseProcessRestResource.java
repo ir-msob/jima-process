@@ -1,24 +1,31 @@
 package ir.msob.jima.process.api.restful.service.rest.process;
 
 import ir.msob.jima.core.commons.security.BaseUser;
+import ir.msob.jima.process.api.restful.service.rest.process.read.BaseCountProcessRestResource;
+import ir.msob.jima.process.api.restful.service.rest.process.read.BaseGetOneProcessRestResource;
+import ir.msob.jima.process.api.restful.service.rest.process.read.BaseGetPageProcessRestResource;
+import ir.msob.jima.process.api.restful.service.rest.process.write.*;
+import ir.msob.jima.process.commons.criteria.BaseProcessCriteria;
+import ir.msob.jima.process.commons.domain.BaseProcess;
+import ir.msob.jima.process.commons.dto.BaseProcessDto;
 import ir.msob.jima.process.commons.repository.BaseProcessRepository;
-import ir.msob.jima.process.service.BaseProcessService;
-
-import java.io.Serializable;
+import ir.msob.jima.process.commons.service.BaseProcessService;
 
 public interface BaseProcessRestResource<
-        ID extends Comparable<ID> & Serializable,
         USER extends BaseUser,
-        PR extends BaseProcessRepository,
-        S extends BaseProcessService<USER, PR>>
+        D extends BaseProcess,
+        DTO extends BaseProcessDto,
+        C extends BaseProcessCriteria,
+        R extends BaseProcessRepository<D, C>,
+        S extends BaseProcessService<USER, D, DTO, C, R>>
         extends
-        BaseSaveProcessRestResource<ID, USER, PR, S>,
-        BaseDeleteProcessRestResource<ID, USER, PR, S>,
-        BaseGetOneProcessRestResource<ID, USER, PR, S>,
-        BaseCountProcessRestResource<ID, USER, PR, S>,
-        BaseGetPageProcessRestResource<ID, USER, PR, S>,
-        BaseResumeProcessRestResource<ID, USER, PR, S>,
-        BaseStartProcessRestResource<ID, USER, PR, S>,
-        BaseSuspendProcessRestResource<ID, USER, PR, S> {
+        BaseSaveProcessRestResource<USER, D, DTO, C, R, S>,
+        BaseDeleteProcessRestResource<USER, D, DTO, C, R, S>,
+        BaseGetOneProcessRestResource<USER, D, DTO, C, R, S>,
+        BaseCountProcessRestResource<USER, D, DTO, C, R, S>,
+        BaseGetPageProcessRestResource<USER, D, DTO, C, R, S>,
+        BaseResumeProcessRestResource<USER, D, DTO, C, R, S>,
+        BaseStartProcessRestResource<USER, D, DTO, C, R, S>,
+        BaseSuspendProcessRestResource<USER, D, DTO, C, R, S> {
 
 }

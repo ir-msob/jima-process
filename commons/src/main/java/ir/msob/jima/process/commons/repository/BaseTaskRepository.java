@@ -1,22 +1,23 @@
 package ir.msob.jima.process.commons.repository;
 
-import ir.msob.jima.process.commons.criteria.TaskCriteria;
-import ir.msob.jima.process.commons.dto.TaskDto;
+import ir.msob.jima.core.commons.repository.BaseRepository;
+import ir.msob.jima.process.commons.criteria.BaseTaskCriteria;
+import ir.msob.jima.process.commons.domain.BaseTask;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import reactor.core.publisher.Mono;
 
-public interface BaseTaskRepository {
+public interface BaseTaskRepository<D extends BaseTask, C extends BaseTaskCriteria> extends BaseRepository<String, D> {
 
-    Mono<TaskDto> save(TaskDto dto);
+    Mono<D> save(D domain);
 
-    Mono<TaskDto> complete(TaskCriteria criteria, TaskDto dto);
+    Mono<D> complete(C criteria, D domain);
 
-    Mono<String> delete(TaskCriteria criteria);
+    Mono<String> delete(C criteria);
 
-    Mono<TaskDto> getOne(TaskCriteria criteria);
+    Mono<D> getOne(C criteria);
 
-    Mono<Long> count(TaskCriteria criteria);
+    Mono<Long> count(C criteria);
 
-    Mono<Page<TaskDto>> getPage(TaskCriteria criteria, Pageable pageable);
+    Mono<Page<D>> getPage(C criteria, Pageable pageable);
 }

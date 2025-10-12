@@ -11,7 +11,7 @@
     <artifactId>process-starter-restful-server</artifactId>
     <name>restful-server</name>
     <description>restful-server</description>
-    <packaging>pom</packaging>
+    <packaging>jar</packaging>
     <dependencies>
         <dependency>
             <groupId>ir.msob.jima.process</groupId>

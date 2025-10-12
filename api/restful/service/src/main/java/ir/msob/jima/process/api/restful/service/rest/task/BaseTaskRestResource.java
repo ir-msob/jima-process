@@ -1,21 +1,30 @@
 package ir.msob.jima.process.api.restful.service.rest.task;
 
 import ir.msob.jima.core.commons.security.BaseUser;
+import ir.msob.jima.process.api.restful.service.rest.task.read.BaseCountTaskRestResource;
+import ir.msob.jima.process.api.restful.service.rest.task.read.BaseGetOneTaskRestResource;
+import ir.msob.jima.process.api.restful.service.rest.task.read.BaseGetPageTaskRestResource;
+import ir.msob.jima.process.api.restful.service.rest.task.write.BaseCompleteTaskRestResource;
+import ir.msob.jima.process.api.restful.service.rest.task.write.BaseDeleteTaskRestResource;
+import ir.msob.jima.process.api.restful.service.rest.task.write.BaseSaveTaskRestResource;
+import ir.msob.jima.process.commons.criteria.BaseTaskCriteria;
+import ir.msob.jima.process.commons.domain.BaseTask;
+import ir.msob.jima.process.commons.dto.BaseTaskDto;
 import ir.msob.jima.process.commons.repository.BaseTaskRepository;
-import ir.msob.jima.process.service.BaseTaskService;
-
-import java.io.Serializable;
+import ir.msob.jima.process.commons.service.BaseTaskService;
 
 public interface BaseTaskRestResource<
-        ID extends Comparable<ID> & Serializable,
         USER extends BaseUser,
-        TR extends BaseTaskRepository,
-        S extends BaseTaskService<USER, TR>>
+        D extends BaseTask,
+        DTO extends BaseTaskDto,
+        C extends BaseTaskCriteria,
+        R extends BaseTaskRepository<D, C>,
+        S extends BaseTaskService<USER, D, DTO, C, R>>
         extends
-        BaseCompleteTaskRestResource<ID, USER, TR, S>,
-        BaseDeleteTaskRestResource<ID, USER, TR, S>,
-        BaseGetOneTaskRestResource<ID, USER, TR, S>,
-        BaseCountTaskRestResource<ID, USER, TR, S>,
-        BaseGetPageTaskRestResource<ID, USER, TR, S>,
-        BaseSaveTaskRestResource<ID, USER, TR, S> {
+        BaseCompleteTaskRestResource<USER, D, DTO, C, R, S>,
+        BaseDeleteTaskRestResource<USER, D, DTO, C, R, S>,
+        BaseGetOneTaskRestResource<USER, D, DTO, C, R, S>,
+        BaseCountTaskRestResource<USER, D, DTO, C, R, S>,
+        BaseGetPageTaskRestResource<USER, D, DTO, C, R, S>,
+        BaseSaveTaskRestResource<USER, D, DTO, C, R, S> {
 }

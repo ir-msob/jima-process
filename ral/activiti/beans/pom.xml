@@ -16,7 +16,7 @@
         <!-- MSob -->
         <dependency>
             <groupId>ir.msob.jima.process</groupId>
-            <artifactId>process-service</artifactId>
+            <artifactId>process-commons</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
         <!-- Activiti -->
