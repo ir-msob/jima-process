@@ -4,17 +4,19 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>ir.msob.jima.process</groupId>
-        <artifactId>process-parent</artifactId>
+        <artifactId>process-starter</artifactId>
         <version>${jima-process.version}</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
-    <artifactId>process-starter</artifactId>
-    <name>starter</name>
-    <description>starter</description>
-    <packaging>pom</packaging>
-    <modules>
-        <module>commons</module>
-        <module>restful-server</module>
-        <module>activiti</module>
-    </modules>
+    <artifactId>process-starter-commons</artifactId>
+    <name>commons</name>
+    <description>commons</description>
+    <packaging>jar</packaging>
+    <dependencies>
+        <dependency>
+            <groupId>ir.msob.jima.process</groupId>
+            <artifactId>process-commons</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
 </project>
